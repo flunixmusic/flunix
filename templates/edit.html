@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="topbar">
+    <input type="text" placeholder="Edit song details...">
+    <div class="profile">✏</div>
+</div>
+
+<section class="welcome">
+    <h1>✏ Edit Song</h1>
+    <p>Update all song information</p>
+</section>
+
+<section class="upload-page-box">
+
+```
+<form method="POST"
+      enctype="multipart/form-data"
+      class="upload-form">
+
+    <label>Song Title</label>
+    <input
+        type="text"
+        name="title"
+        value="{{ song.title }}"
+        required>
+
+    <label>Artist Name</label>
+    <input
+        type="text"
+        name="artist"
+        value="{{ song.artist }}"
+        required>
+
+    <label>Album Name</label>
+    <input
+        type="text"
+        name="album"
+        value="{{ song.album }}">
+
+    <label>Genre</label>
+    <input
+        type="text"
+        name="genre"
+        value="{{ song.genre }}">
+
+    <label>Current Cover</label>
+
+    {% if song.cover_image %}
+    <img
+        src="{{ url_for('static', filename='uploads/covers/' + song.cover_image) }}"
+        style="width:180px;border-radius:12px;margin-bottom:15px;">
+    {% endif %}
+
+    <label>Change Cover Image</label>
+    <input
+        type="file"
+        name="cover"
+        accept="image/*">
+
+    <label>Current Song File</label>
+    <p>{{ song.song_file }}</p>
+
+    <label>Change Song File</label>
+    <input
+        type="file"
+        name="song"
+        accept=".mp3,audio/*">
+
+    <button type="submit">
+        Update Song
+    </button>
+
+</form>
+```
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="topbar">
+    <input type="text" placeholder="Admin upload panel...">
+    <div class="profile">👤</div>
+</div>
+
+<section class="welcome">
+    <h1>⬆ Upload Music</h1>
+    <p>Add new songs to Tunexa library</p>
+</section>
+
+<section class="upload-page-box">
+
+    <form method="POST" enctype="multipart/form-data" class="upload-form">
+
+        <label>Song Title</label>
+        <input type="text" name="title" placeholder="Enter song title" required>
+
+        <label>Artist Name</label>
+        <label>Album Name</label>
+<input type="text" name="album" placeholder="Enter album name">
+
+<label>Genre</label>
+<input type="text" name="genre" placeholder="Enter genre">
+        <input type="text" name="artist" placeholder="Enter artist name" required>
+
+        <label>Cover Image</label>
+        <input type="file" name="cover" accept="image/*" required>
+
+        <label>MP3 Song File</label>
+        <input type="file" name="song" accept=".mp3,audio/mpeg" required>
+
+        <button type="submit">Upload Song</button>
+
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="success-message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+</section>
+
+{% endblock %}

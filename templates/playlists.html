@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="topbar">
+    <input type="text" placeholder="Search playlists...">
+    <div class="profile">＋</div>
+</div>
+
+<section class="welcome">
+    <h1>Playlists</h1>
+    <p>Create and manage your music playlists</p>
+</section>
+
+<section class="upload-page-box">
+
+    <form method="POST"
+          enctype="multipart/form-data"
+          class="upload-form">
+
+        <label>Create Playlist</label>
+
+        <input
+            type="text"
+            name="name"
+            placeholder="Playlist name"
+            required
+        >
+
+        <label>Playlist Cover</label>
+
+        <input
+            type="file"
+            name="cover"
+            accept="image/*"
+        >
+
+        <button type="submit">
+            Create Playlist
+        </button>
+
+    </form>
+
+</section>
+
+<section class="music-section">
+
+    <div class="section-head">
+        <h2>Your Playlists</h2>
+        <span>{{ playlists|length }} Playlists</span>
+    </div>
+
+    <div class="small-card-row">
+
+        {% for playlist in playlists %}
+
+        <div class="mini-card">
+
+            {% if playlist.cover_image %}
+            <img class="playlist-cover"
+                 src="{{ url_for('static', filename='uploads/playlists/' + playlist.cover_image) }}">
+            {% else %}
+            <div class="playlist-cover-placeholder">♫</div>
+            {% endif %}
+
+            <h3>{{ playlist.name }}</h3>
+
+            <a href="/playlist/{{ playlist.id }}">
+                Open Playlist
+            </a>
+
+            <a href="/playlist/delete/{{ playlist.id }}">
+                Delete
+            </a>
+
+        </div>
+
+        {% else %}
+
+        <div class="mini-card">
+            No Playlist Created Yet
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

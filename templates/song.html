@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="song-page">
+
+    <div class="song-premium-card">
+
+        <div class="song-cover-box">
+            {% if song.cover_image %}
+            <img src="{{ url_for('static', filename='uploads/covers/' + song.cover_image) }}" alt="Song Cover">
+            {% else %}
+            <img src="https://via.placeholder.com/300" alt="Song Cover">
+            {% endif %}
+        </div>
+
+        <div class="song-info-box">
+
+            <p class="song-label">Now Playing</p>
+
+            <h1>{{ song.title }}</h1>
+
+            <h3>{{ song.artist }}</h3>
+
+            <p class="file-name">MP3 File: {{ song.song_file }}</p>
+
+            {% if song.song_file %}
+            <audio controls preload="metadata" class="audio-player">
+                <source src="{{ url_for('static', filename='uploads/songs/' ~ song.song_file) }}" type="audio/mpeg">
+                Your browser does not support audio.
+            </audio>
+
+            <a href="{{ url_for('static', filename='uploads/songs/' ~ song.song_file) }}" download>
+                <button class="download-btn">⬇ Download Song</button>
+            </a>
+            {% else %}
+            <p>Song file not found.</p>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

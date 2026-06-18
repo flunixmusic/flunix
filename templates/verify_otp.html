@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="topbar">
+    <input type="text" placeholder="Verify OTP...">
+    <div class="profile">🔐</div>
+</div>
+
+<section class="welcome">
+    <h1>OTP Verification</h1>
+    <p>Enter OTP to open Flunix Admin Dashboard</p>
+</section>
+
+<section class="upload-page-box">
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="success-message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" class="upload-form">
+        <label>OTP</label>
+        <input type="text" name="otp" placeholder="Enter 6 digit OTP" required>
+
+        <button type="submit">Verify OTP</button>
+    </form>
+
+</section>
+
+{% endblock %}

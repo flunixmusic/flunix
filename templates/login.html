@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="topbar">
+    <input type="text" placeholder="Admin login...">
+    <div class="profile">🔐</div>
+</div>
+
+<section class="welcome">
+    <h1>🔐 Admin Login</h1>
+    <p>Login to manage Flunix uploads</p>
+</section>
+
+<section class="upload-page-box">
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="success-message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" class="upload-form">
+
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Enter username" required>
+
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter password" required>
+
+        <label>Admin Email or Mobile</label>
+        <input type="text" name="contact" placeholder="Enter allowed email or mobile" required>
+
+        <button type="submit">Send OTP</button>
+
+    </form>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="topbar">
+    <input type="text" placeholder="Search your library...">
+    <div class="profile">👤</div>
+</div>
+
+<section class="welcome">
+    <h1> Your Library</h1>
+    <p>Your saved songs, playlists and downloads</p>
+</section>
+
+<section class="music-section">
+    <div class="section-head">
+        <h2>Library Collections</h2>
+        <span>Spotify Style</span>
+    </div>
+
+    <div class="small-card-row">
+
+        <a href="/liked" class="mini-card">
+            ❤️ Liked Songs
+        </a>
+
+        <a href="/playlists" class="mini-card">
+            🎶 My Playlists
+        </a>
+
+        <div class="mini-card">
+            🎧 Recently Played
+        </div>
+
+        <div class="mini-card">
+            ⬇ Downloads
+        </div>
+
+    </div>
+</section>
+
+<section class="music-section">
+    <div class="section-head">
+        <h2>Your Playlists</h2>
+        <span>{{ playlists|length }} Playlists</span>
+    </div>
+
+    <div class="small-card-row">
+
+        {% for playlist in playlists %}
+
+        <a href="/playlist/{{ playlist.id }}" class="mini-card">
+            🎵 {{ playlist.name }}
+        </a>
+
+        {% else %}
+
+        <div class="mini-card">
+            No Playlist Created Yet
+        </div>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+<section class="music-section">
+    <div class="section-head">
+        <h2>Liked Songs</h2>
+        <span>{{ liked_songs|length }} Songs</span>
+    </div>
+
+    <div class="song-grid">
+
+        {% for song in liked_songs %}
+
+        <div class="song-card">
+
+            {% if song.cover_image %}
+            <img src="{{ url_for('static', filename='uploads/covers/' + song.cover_image) }}">
+            {% endif %}
+
+            <h3>{{ song.title }}</h3>
+            <p>{{ song.artist }}</p>
+
+            <a href="/song/{{ song.id }}">Open</a>
+
+        </div>
+
+        {% else %}
+
+        <p>No liked songs yet.</p>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+{% endblock %}

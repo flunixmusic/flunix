@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="topbar">
+    <input type="text" placeholder="Search settings...">
+    <div class="profile">⚙</div>
+</div>
+
+<section class="welcome">
+    <h1 id="settings-title">⚙ Settings</h1>
+    <p id="settings-subtitle">Manage your Tunexa experience</p>
+</section>
+
+<section class="music-section">
+
+    <div class="section-head">
+        <h2 id="general-settings-title">General Settings</h2>
+        <span>Tunexa</span>
+    </div>
+
+    <div class="small-card-row">
+
+        <div class="mini-card" id="account-settings-card">
+            👤 Account Settings
+        </div>
+
+        <div class="mini-card">
+            <h3 id="theme-title">🎨 Theme</h3>
+
+            <select id="theme-select" class="language-select">
+                <option value="dark">Dark Theme</option>
+                <option value="light">Light Theme</option>
+            </select>
+        </div>
+
+        <div class="mini-card language-card">
+            <h3 id="language-title">🌐 Language</h3>
+
+            <select id="language-select" class="language-select">
+                <option value="English">English</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Gujarati">Gujarati</option>
+                <option value="Telugu">Telugu</option>
+                <option value="Tamil">Tamil</option>
+                <option value="Malayalam">Malayalam</option>
+                <option value="German">German</option>
+                <option value="Chinese">Chinese</option>
+                <option value="Marathi">Marathi</option>
+                <option value="Bengali">Bengali</option>
+                <option value="Punjabi">Punjabi</option>
+                <option value="Spanish">Spanish</option>
+                <option value="French">French</option>
+                <option value="Japanese">Japanese</option>
+                <option value="Korean">Korean</option>
+                <option value="Urdu">Urdu</option>
+            </select>
+        </div>
+
+        <div class="mini-card" id="music-quality-card">
+            🎵 Music Quality
+        </div>
+
+        <div class="mini-card" id="notifications-card">
+            🔔 Notifications
+        </div>
+
+    </div>
+
+</section>
+
+<section class="music-section">
+
+    <div class="section-head">
+        <h2 id="playback-settings-title">Playback Settings</h2>
+        <span>Player</span>
+    </div>
+
+    <div class="small-card-row">
+
+        <div class="mini-card" id="volume-control-card">
+            🔊 Volume Control
+        </div>
+
+        <div class="mini-card" id="repeat-songs-card">
+            🔁 Repeat Songs
+        </div>
+
+        <div class="mini-card" id="high-quality-card">
+            🎧 High Quality Audio
+        </div>
+
+        <div class="mini-card" id="auto-play-card">
+            ▶ Auto Play
+        </div>
+
+    </div>
+
+</section>
+
+<section class="music-section">
+
+    <div class="section-head">
+        <h2 id="about-title">About Tunexa</h2>
+        <span>Info</span>
+    </div>
+
+    <div class="small-card-row">
+
+        <div class="mini-card">
+            🎧 Tunexa Version 1.0
+        </div>
+
+        <div class="mini-card" id="developed-by-card">
+            💜 Developed By You
+        </div>
+
+        <div class="mini-card" id="privacy-card">
+            🔒 Privacy & Security
+        </div>
+
+        <div class="mini-card" id="terms-card">
+            📄 Terms & Conditions
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

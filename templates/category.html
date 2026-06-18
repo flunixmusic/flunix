@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="topbar">
+    <input type="text" placeholder="Search {{ genre }} songs...">
+    <div class="profile">♫</div>
+</div>
+
+<section class="welcome">
+    <h1>{{ genre|title }} Songs</h1>
+    <p>Play songs from this collection</p>
+</section>
+
+<section class="playlist-list-section">
+
+    <div class="playlist-list-head">
+        <span>#</span>
+        <span>Title</span>
+        <span>Options</span>
+    </div>
+
+    {% for song in songs %}
+
+    <div class="playlist-song-row"
+         data-id="{{ song.id }}"
+         data-title="{{ song.title }}"
+         data-artist="{{ song.artist }}"
+         data-audio="{{ url_for('static', filename='uploads/songs/' ~ song.song_file) }}"
+         data-cover="{{ url_for('static', filename='uploads/covers/' + song.cover_image) if song.cover_image else '' }}">
+
+        <div class="playlist-cover-mini">
+            {% if song.cover_image %}
+            <img class="playlist-song-cover"
+                 src="{{ url_for('static', filename='uploads/covers/' + song.cover_image) }}">
+            {% else %}
+            <div class="playlist-song-placeholder">♪</div>
+            {% endif %}
+
+            <span class="playlist-row-play">▶</span>
+        </div>
+
+        <div class="playlist-song-info">
+            <h3>{{ song.title }}</h3>
+            <p>{{ song.artist }}</p>
+        </div>
+
+        <div class="playlist-menu-box" onclick="event.stopPropagation();">
+            <span class="playlist-song-menu">⋮</span>
+
+            <a href="/like/{{ song.id }}" class="remove-song-btn">
+                Like
+            </a>
+        </div>
+
+    </div>
+
+    {% else %}
+
+    <div class="mini-card">
+        Is category me abhi koi song nahi hai.
+    </div>
+
+    {% endfor %}
+
+</section>
+
+{% endblock %}

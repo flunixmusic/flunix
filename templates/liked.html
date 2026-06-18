@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="topbar">
+    <input type="text" placeholder="Search liked songs...">
+    <div class="profile">♡</div>
+</div>
+
+<section class="playlist-banner">
+
+    {% if songs and songs[0].cover_image %}
+
+<div class="playlist-banner-cover">
+    <img src="{{ url_for('static',
+        filename='uploads/covers/' + songs[0].cover_image) }}">
+</div>
+
+{% else %}
+
+<div class="playlist-banner-placeholder">
+    ❤️
+</div>
+
+{% endif %}
+
+    <div class="playlist-banner-info">
+        <p>Playlist</p>
+        <h1>Liked Songs</h1>
+        <span>{{ songs|length }} Songs</span>
+    </div>
+
+</section>
+
+<section class="playlist-list-section">
+
+    <div class="playlist-list-head">
+        <span>#</span>
+        <span>Title</span>
+        <span>Options</span>
+    </div>
+
+    {% for song in songs %}
+
+    <div class="playlist-song-row"
+         data-title="{{ song.title }}"
+         data-artist="{{ song.artist }}"
+         data-audio="{{ url_for('static', filename='uploads/songs/' ~ song.song_file) }}"
+         data-id="{{ song.id }}">
+
+        <div class="playlist-cover-mini">
+
+            {% if song.cover_image %}
+            <img class="playlist-song-cover"
+                 src="{{ url_for('static', filename='uploads/covers/' + song.cover_image) }}">
+            {% else %}
+            <div class="playlist-song-placeholder">♪</div>
+            {% endif %}
+
+            <span class="playlist-row-play">▶</span>
+
+        </div>
+
+        <div class="playlist-song-info">
+            <h3>{{ song.title }}</h3>
+            <p>{{ song.artist }}</p>
+        </div>
+
+        <div class="playlist-menu-box"
+             onclick="event.stopPropagation();">
+
+            <span class="playlist-song-menu">⋮</span>
+
+            <a href="/like/{{ song.id }}"
+               class="remove-song-btn">
+                Unlike
+            </a>
+
+        </div>
+
+    </div>
+
+    {% else %}
+
+    <div class="mini-card">
+        No liked songs yet.
+    </div>
+
+    {% endfor %}
+
+</section>
+
+{% endblock %}

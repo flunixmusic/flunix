@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="topbar">
+    <input type="text" placeholder="Search in playlist...">
+    <div class="profile">♫</div>
+</div>
+
+<section class="playlist-banner">
+
+    <div class="playlist-banner-cover">
+        {% if playlist.cover_image %}
+        <img src="{{ url_for('static', filename='uploads/playlists/' + playlist.cover_image) }}">
+        {% else %}
+        <div class="playlist-banner-placeholder">♫</div>
+        {% endif %}
+    </div>
+
+    <div class="playlist-banner-info">
+        <p>Playlist</p>
+        <h1>{{ playlist.name }}</h1>
+        <span>{{ songs|length }} Songs</span>
+    </div>
+
+</section>
+
+<div class="playlist-controls">
+    <button class="playlist-play-btn" onclick="playFirstPlaylistSong()">▶</button>
+    <button class="playlist-icon-btn">⤨</button>
+    <span class="playlist-total">{{ songs|length }} Songs</span>
+</div>
+
+<section class="playlist-list-section">
+
+    {% for song in songs %}
+
+    <div class="playlist-song-row"
+         data-title="{{ song.title }}"
+         data-artist="{{ song.artist }}"
+         data-audio="{{ url_for('static', filename='uploads/songs/' ~ song.song_file) }}"
+         data-id="{{ song.id }}">
+
+        {% if song.cover_image %}
+        <img class="playlist-song-cover"
+             src="{{ url_for('static', filename='uploads/covers/' + song.cover_image) }}">
+        {% else %}
+        <div class="playlist-song-placeholder">♪</div>
+        {% endif %}
+
+        <div class="playlist-song-info">
+            <h3>{{ song.title }}</h3>
+            <p>{{ song.artist }}</p>
+        </div>
+
+       <div class="playlist-menu-box" onclick="event.stopPropagation();">
+    <span class="playlist-song-menu">⋮</span>
+
+    <a href="/playlist/{{ playlist.id }}/remove/{{ song.id }}"
+       class="remove-song-btn">
+        Remove
+    </a>
+</div>
+
+    </div>
+
+    {% else %}
+
+    <div class="mini-card">No songs in this playlist.</div>
+
+    {% endfor %}
+
+</section>
+
+<section class="music-section">
+
+    <div class="section-head">
+        <h2>Add Songs</h2>
+    </div>
+
+    <div class="song-grid">
+
+        {% for song in all_songs %}
+
+        <div class="song-card">
+
+            <div class="cover-wrap">
+                {% if song.cover_image %}
+                <img src="{{ url_for('static', filename='uploads/covers/' + song.cover_image) }}">
+                {% else %}
+                <img src="https://via.placeholder.com/300">
+                {% endif %}
+            </div>
+
+            <h3>{{ song.title }}</h3>
+            <p>{{ song.artist }}</p>
+
+            <a href="/playlist/{{ playlist.id }}/add/{{ song.id }}"
+               onclick="event.stopPropagation();">
+                Add To Playlist
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+<script>
+function playFirstPlaylistSong(){
+    const firstSong = document.querySelector(".playlist-song-row");
+
+    if(firstSong){
+        firstSong.click();
+    }else{
+        alert("Is playlist me koi song nahi hai");
+    }
+}
+</script>
+
+{% endblock %}

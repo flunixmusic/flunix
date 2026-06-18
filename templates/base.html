@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flunix</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body id="app-body">
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <span class="brand-icon">♪</span>
+            <span>Flunix</span>
+        </div>
+
+        <a href="/" class="side-link"><span class="nav-icon">⌂</span><span id="nav-home">Home</span></a>
+        <a href="/search" class="side-link"><span class="nav-icon">⌕</span><span id="nav-search">Search</span></a>
+        <a href="/library" class="side-link"><span class="nav-icon">▱</span><span id="nav-library">Your Library</span></a>
+        <a href="/liked" class="side-link"><span class="nav-icon">♡</span><span id="nav-liked">Liked Songs</span></a>
+        <a href="/settings" class="side-link"><span class="nav-icon">⚙</span><span id="nav-settings">Settings</span></a>
+
+        {% if session.get("admin_logged_in") %}
+            <a href="/upload" class="side-link"><span class="nav-icon">⇧</span><span id="nav-upload">Upload Music</span></a>
+            <a href="/admin" class="side-link"><span class="nav-icon">⚙</span><span id="nav-admin">Admin</span></a>
+            <a href="/logout" class="side-link"><span class="nav-icon">↪</span><span id="nav-logout">Logout</span></a>
+        {% else %}
+            <a href="/login" class="side-link"><span class="nav-icon">⌾</span><span id="nav-login">Admin Login</span></a>
+        {% endif %}
+
+        <div class="side-title">
+            <span id="nav-playlists">Playlists</span>
+            <a href="/playlists" class="create-playlist-btn">+</a>
+        </div>
+
+        <div class="playlist-sidebar">
+            {% for playlist in sidebar_playlists %}
+            <a href="/playlist/{{ playlist.id }}" class="playlist-link playlist-link-flex">
+                {% if playlist.cover_image %}
+                <img class="sidebar-playlist-cover" src="{{ url_for('static', filename='uploads/playlists/' + playlist.cover_image) }}">
+                {% else %}
+                <div class="sidebar-playlist-placeholder">♫</div>
+                {% endif %}
+
+                <div>
+                    <div class="playlist-name">{{ playlist.name }}</div>
+                    <div class="playlist-count">{{ playlist.count }} Songs</div>
+                </div>
+            </a>
+            {% else %}
+            <div class="playlist-empty">No playlists yet</div>
+            {% endfor %}
+        </div>
+
+    </aside>
+
+    <main class="main-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</div>
+
+<div class="bottom-player premium-player">
+
+    <div class="player-song">
+        <div class="player-cover" id="player-cover">♪</div>
+
+        <div>
+            <h4 id="player-title">Flunix Player</h4>
+            <p id="player-artist">Select a song</p>
+        </div>
+
+        <button id="like-btn" class="like-btn">♡</button>
+
+        <a id="download-btn" class="player-download-btn" href="#" download>⬇</a>
+    </div>
+
+    <div class="player-center">
+        <div class="player-controls">
+            <button id="prev-btn" class="player-small-btn">⏮</button>
+            <button id="play-pause-btn">▶</button>
+            <button id="next-btn" class="player-small-btn">⏭</button>
+            <button id="repeat-btn" class="player-small-btn">↻</button>
+        </div>
+
+        <div class="progress-box">
+            <span id="current-time">0:00</span>
+            <input type="range" id="progress-bar" value="0" min="0" max="100">
+            <span id="duration">0:00</span>
+        </div>
+    </div>
+
+    <div class="volume-control">
+        <button id="mute-btn" class="premium-volume-btn">♫</button>
+        <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1">
+    </div>
+
+    <audio id="main-audio"></audio>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

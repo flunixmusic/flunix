@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="topbar">
+    <input
+        type="text"
+        id="admin-search"
+        placeholder="Search songs by title, artist, genre...">
+    <div class="profile">⚙</div>
+</div>
+
+<section class="welcome">
+    <h1>Flunix Admin Dashboard</h1>
+    <p>Manage Flunix music library, uploads and song details</p>
+</section>
+
+<section class="dashboard-grid">
+
+```
+<div class="dash-card">
+    <h2>{{ total_songs }}</h2>
+    <p>Total Songs</p>
+</div>
+
+<div class="dash-card">
+    <h2>{{ songs|length }}</h2>
+    <p>Uploaded Songs</p>
+</div>
+
+<div class="dash-card">
+    <h2>{{ total_views }}</h2>
+    <p>Total Views</p>
+</div>
+
+<div class="dash-card">
+    <h2>{{ total_likes }}</h2>
+    <p>Total Likes</p>
+</div>
+
+<div class="dash-card">
+    <h2>{{ total_downloads }}</h2>
+    <p>Total Downloads</p>
+</div>
+```
+
+</section>
+
+<section class="music-section">
+
+```
+<div class="section-head">
+    <h2>Top 10 Most Played Songs</h2>
+    <span>Views Ranking</span>
+</div>
+
+<div class="admin-song-list">
+
+    <div class="admin-song-head">
+        <span>#</span>
+        <span>Song</span>
+        <span>Artist</span>
+        <span>Views</span>
+    </div>
+
+    {% for song in most_played_songs %}
+
+    <div class="admin-song-row">
+
+        <div>#{{ loop.index }}</div>
+
+        <div class="admin-song-info">
+            <h3>{{ song.title }}</h3>
+        </div>
+
+        <div>{{ song.artist }}</div>
+
+        <div>
+            👁 {{ song.views or 0 }}
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+```
+
+</section>
+
+<section class="music-section">
+
+```
+<div class="section-head">
+    <h2>Song Management</h2>
+    <span>{{ songs|length }} Songs</span>
+</div>
+
+<div class="admin-song-list">
+
+    <div class="admin-song-head">
+        <span>Cover</span>
+        <span>Song</span>
+        <span>Artist</span>
+        <span>Genre</span>
+        <span>Views</span>
+        <span>Downloads</span>
+        <span>Actions</span>
+    </div>
+
+    {% for song in songs %}
+
+    <div class="admin-song-row">
+
+        <div>
+            {% if song.cover_image %}
+            <img class="admin-cover"
+                 src="{{ url_for('static', filename='uploads/covers/' + song.cover_image) }}">
+            {% else %}
+            <div class="admin-cover-placeholder">♪</div>
+            {% endif %}
+        </div>
+
+        <div class="admin-song-info">
+            <h3>{{ song.title }}</h3>
+            <p>{{ song.song_file }}</p>
+        </div>
+
+        <div>{{ song.artist }}</div>
+
+        <div>{{ song.genre }}</div>
+
+        <div>
+            {{ song.views or 0 }}
+        </div>
+
+        <div>
+            {{ song.downloads or 0 }}
+        </div>
+
+        <div class="admin-actions">
+            <a href="/song/{{ song.id }}">View</a>
+            <a href="/edit/{{ song.id }}">Edit</a>
+            <a href="/delete/{{ song.id }}"
+               onclick="return confirm('Delete this song?')">
+                Delete
+            </a>
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+```
+
+</section>
+
+{% endblock %}

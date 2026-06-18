@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="topbar">
+    <input type="text" placeholder="Search for songs, artists, albums...">
+    <div class="profile">👤</div>
+</div>
+
+<section class="welcome">
+    <h1 id="greeting-text">Welcome 👋</h1>
+    <p>Enjoy the latest music uploaded on flunix</p>
+</section>
+
+<section class="music-section">
+    <div class="section-head">
+        <h2>Quick Access</h2>
+        <span>Your Music</span>
+    </div>
+
+    <div class="small-card-row">
+        <a href="/library" class="mini-card">▱ Your Library</a>
+        <a href="/liked" class="mini-card">♡ Liked Songs</a>
+        <a href="/playlists" class="mini-card">＋ Playlists</a>
+        <a href="/upload" class="mini-card">⇧ Upload Music</a>
+    </div>
+</section>
+
+<section class="music-section">
+    <div class="section-head">
+        <h2>Featured for You</h2>
+        <span>{{ songs|length }} Songs</span>
+    </div>
+
+    <div class="playlist-list-section">
+
+        <div class="playlist-list-head">
+            <span>#</span>
+            <span>Title</span>
+            <span>Options</span>
+        </div>
+
+        {% for song in songs %}
+
+        <div class="playlist-song-row"
+             data-id="{{ song.id }}"
+             data-title="{{ song.title }}"
+             data-artist="{{ song.artist }}"
+             data-audio="{{ url_for('static', filename='uploads/songs/' ~ song.song_file) }}"
+             data-cover="{{ url_for('static', filename='uploads/covers/' + song.cover_image) if song.cover_image else '' }}">
+
+            <div class="playlist-cover-mini">
+                {% if song.cover_image %}
+                <img class="playlist-song-cover"
+                     src="{{ url_for('static', filename='uploads/covers/' + song.cover_image) }}">
+                {% else %}
+                <div class="playlist-song-placeholder">♪</div>
+                {% endif %}
+
+                <span class="playlist-row-play">▶</span>
+            </div>
+
+            <div class="playlist-song-info">
+                <h3>{{ song.title }}</h3>
+                <p>{{ song.artist }}</p>
+            </div>
+
+            <div class="playlist-menu-box" onclick="event.stopPropagation();">
+                <span class="playlist-song-menu">⋮</span>
+
+                <div class="song-options-menu">
+    <a href="/song/{{ song.id }}">Details</a>
+
+    <a href="/playlists">Add to Playlist</a>
+
+    <a href="/download/{{ song.id }}">
+    Download
+</a>
+
+    <button onclick="copySongLink('/song/{{ song.id }}')">
+        Share
+    </button>
+</div>
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="mini-card">
+            No songs uploaded yet.
+        </div>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+<section class="music-section">
+    <div class="section-head">
+        <h2>Latest Upload Songs</h2>
+        <span>Album Style</span>
+    </div>
+
+    <div class="song-grid">
+
+        {% for song in songs[:5] %}
+
+        <div class="song-card"
+             data-id="{{ song.id }}"
+             data-title="{{ song.title }}"
+             data-artist="{{ song.artist }}"
+             data-audio="{{ url_for('static', filename='uploads/songs/' ~ song.song_file) }}"
+             data-cover="{{ url_for('static', filename='uploads/covers/' + song.cover_image) if song.cover_image else '' }}">
+
+            <div class="cover-wrap">
+                {% if song.cover_image %}
+                <img src="{{ url_for('static', filename='uploads/covers/' + song.cover_image) }}">
+                {% else %}
+                <img src="https://via.placeholder.com/300">
+                {% endif %}
+
+                <div class="play-circle">▶</div>
+            </div>
+
+            <h3>{{ song.title }}</h3>
+            <p>{{ song.artist }}</p>
+
+        </div>
+
+        {% else %}
+
+        <p>No latest songs.</p>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+<section class="music-section">
+    <div class="section-head">
+        <h2>Your Playlists</h2>
+        <span>Album Style</span>
+    </div>
+
+    <div class="song-grid">
+
+        {% for playlist in sidebar_playlists %}
+
+        <a href="/playlist/{{ playlist.id }}" class="song-card">
+            <div class="cover-wrap">
+                {% if playlist.cover_image %}
+                <img src="{{ url_for('static', filename='uploads/playlists/' + playlist.cover_image) }}">
+                {% else %}
+                <img src="https://via.placeholder.com/300">
+                {% endif %}
+            </div>
+
+            <h3>{{ playlist.name }}</h3>
+            <p>{{ playlist.count }} Songs</p>
+        </a>
+
+        {% else %}
+
+        <div class="mini-card">
+            No playlists created yet.
+        </div>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+<section class="music-section">
+    <div class="section-head">
+        <h2>Most Played Songs</h2>
+        <span>Album Style</span>
+    </div>
+
+    <div class="song-grid">
+
+        {% for song in songs[:5] %}
+
+        <div class="song-card"
+             data-id="{{ song.id }}"
+             data-title="{{ song.title }}"
+             data-artist="{{ song.artist }}"
+             data-audio="{{ url_for('static', filename='uploads/songs/' ~ song.song_file) }}"
+             data-cover="{{ url_for('static', filename='uploads/covers/' + song.cover_image) if song.cover_image else '' }}">
+
+            <div class="cover-wrap">
+                {% if song.cover_image %}
+                <img src="{{ url_for('static', filename='uploads/covers/' + song.cover_image) }}">
+                {% else %}
+                <img src="https://via.placeholder.com/300">
+                {% endif %}
+
+                <div class="play-circle">▶</div>
+            </div>
+
+            <h3>{{ song.title }}</h3>
+            <p>{{ song.artist }}</p>
+
+        </div>
+
+        {% else %}
+
+        <p>No most played songs.</p>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+<section class="music-section">
+    <div class="section-head">
+        <h2>Made For You</h2>
+        <span>Premium Mix</span>
+    </div>
+
+    <div class="small-card-row">
+        <a href="/category/chill" class="mini-card">⌕ Chill Vibes</a>
+        <a href="/category/trending" class="mini-card">↟ Trending</a>
+        <a href="/category/night" class="mini-card">☾ Night Songs</a>
+        <a href="/category/romantic" class="mini-card">♡ Romantic Songs</a>
+    </div>
+</section>
+
+{% endblock %}

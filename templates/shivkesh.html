@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tunexa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <div class="brand">🎵 Tunexa</div>
+
+       <a href="/" class="side-link">🏠 Home</a>
+<a href="/search" class="side-link">🔍 Search</a>
+<a href="/library" class="side-link">📚 Library</a>
+
+{% if session.get("admin_logged_in") %}
+    <a href="/upload" class="side-link">⬆ Upload</a>
+    <a href="/admin" class="side-link">👨‍💼 Admin</a>
+    <a href="/logout" class="side-link">🚪 Logout</a>
+{% else %}
+    <a href="/login" class="side-link">🔐 Admin Login</a>
+{% endif %}
+
+        <div class="side-title">Your Music</div>
+
+        <a href="/library" class="side-link">❤️ Favorites</a>
+        <a href="/playlists" class="side-link">🎶 Playlists</a>
+        <a href="/library" class="side-link">🎧 Recently Played</a>
+        <a href="/library" class="side-link">⬇ Downloads</a>
+    </aside>
+
+    <main class="main-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

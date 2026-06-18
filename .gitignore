@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+*.pyc
+database/*.db
+database/__pycache__/
+static/uploads/songs/
+static/uploads/covers/
+static/uploads/playlists/

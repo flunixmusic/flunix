@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="topbar">
+    <form method="GET" action="/search" style="width:55%;">
+        <input type="text"
+               name="q"
+               value="{{ keyword }}"
+               placeholder="Search for songs, artists, albums..."
+               style="width:100%;">
+    </form>
+
+    <div class="profile">👤</div>
+</div>
+
+<section class="welcome">
+    <h1>🔍 Search Music</h1>
+    <p>Find your favorite songs and artists</p>
+</section>
+
+{% if keyword %}
+
+<section class="music-section">
+    <div class="section-head">
+        <h2>Search Results for "{{ keyword }}"</h2>
+        <span>{{ songs|length }} found</span>
+    </div>
+
+    <div class="song-grid">
+
+        {% for song in songs %}
+
+        <a href="/song/{{ song.id }}" class="song-card">
+
+            <div class="cover-wrap">
+                {% if song.cover_image %}
+                <img src="{{ url_for('static', filename='uploads/covers/' + song.cover_image) }}">
+                {% else %}
+                <img src="https://via.placeholder.com/300">
+                {% endif %}
+
+                <div class="play-circle">▶</div>
+            </div>
+
+            <h3>{{ song.title }}</h3>
+            <p>{{ song.artist }}</p>
+
+        </a>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+{% else %}
+
+<section class="music-section">
+    <div class="section-head">
+        <h2>Top Categories</h2>
+        <span>Explore</span>
+    </div>
+
+    <div class="small-card-row">
+        <div class="mini-card">🎧 Bollywood</div>
+        <div class="mini-card">💜 Romantic</div>
+        <div class="mini-card">🔥 Trending</div>
+        <div class="mini-card">🌙 Chill Vibes</div>
+    </div>
+</section>
+
+{% endif %}
+
+{% endblock %}
