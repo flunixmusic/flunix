@@ -23,7 +23,7 @@ ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "tunexa123")
 
 SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "radhekrishna4774@gmail.com")
-SENDER_APP_PASSWORD = os.environ.get("SENDER_APP_PASSWORD", "juzr mkvr kbbg ombz")
+SENDER_APP_PASSWORD = os.environ.get("SENDER_APP_PASSWORD", "aunuujzrirxsicig")
 
 ALLOWED_ADMIN_CONTACTS = [
     "radhekrishna4774@gmail.com",
