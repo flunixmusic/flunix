@@ -1269,3 +1269,47 @@ audio{
     background:#1ed760;
     color:#06110b;
 }
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    top: auto;
+    width: 100%;
+    height: 70px;
+    z-index: 9999;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-right: none;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    background: #050505;
+  }
+
+  .sidebar .logo,
+  .sidebar .playlists,
+  .sidebar .playlist-title,
+  .sidebar .no-playlist,
+  .sidebar hr {
+    display: none !important;
+  }
+
+  .sidebar a,
+  .sidebar .nav-link {
+    width: auto;
+    height: auto;
+    padding: 10px;
+    margin: 0;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding-bottom: 95px;
+  }
+
+  .bottom-player {
+    bottom: 70px !important;
+    left: 0 !important;
+    width: 100% !important;
+  }
+}
