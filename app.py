@@ -1,30 +1,12 @@
 from flask import Flask, render_template, request, redirect, flash, session
-
 from database.database import (
-    create_tables,
-    get_songs,
-    get_song,
-    add_song,
-    search_songs,
-    get_total_songs,
-    delete_song,
-    update_song,
-    like_song,
-    get_liked_songs,
-    create_playlist,
-    get_playlists,
-    get_playlist,
-    add_song_to_playlist,
-    get_playlist_songs,
-    remove_song_from_playlist,
-    delete_playlist,
-    get_playlist_song_count,
-    get_total_views,
-    get_total_likes,
-    increase_song_view,
-    increase_song_download,
-    get_total_downloads,
-    get_most_played_songs
+    create_tables, get_songs, get_song, add_song, search_songs,
+    get_total_songs, delete_song, update_song, like_song,
+    get_liked_songs, create_playlist, get_playlists, get_playlist,
+    add_song_to_playlist, get_playlist_songs, remove_song_from_playlist,
+    delete_playlist, get_playlist_song_count, get_total_views,
+    get_total_likes, increase_song_view, increase_song_download,
+    get_total_downloads, get_most_played_songs
 )
 
 import os
@@ -33,9 +15,45 @@ import smtplib
 from email.message import EmailMessage
 
 app = Flask(__name__)
-app.secret_key = "tunexa_secret_key"
+app.secret_key = os.environ.get("SECRET_KEY", "flunix_secret_key")
 
 create_tables()
+
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "tunexa123")
+
+SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "radhekrishna4774@gmail.com")
+SENDER_APP_PASSWORD = os.environ.get("SENDER_APP_PASSWORD", "juzr mkvr kbbg ombz")
+
+ALLOWED_ADMIN_CONTACTS = [
+    "radhekrishna4774@gmail.com",
+    "admin2@gmail.com",
+    "9876543210",
+    "9876543211"
+]
+
+
+def is_admin_logged_in():
+    return session.get("admin_logged_in") == True
+
+
+def send_email_otp(receiver_email, otp):
+    msg = EmailMessage()
+    msg["Subject"] = "Flunix Admin OTP"
+    msg["From"] = SENDER_EMAIL
+    msg["To"] = receiver_email
+
+    msg.set_content(f"""
+Your Flunix Admin OTP is:
+
+{otp}
+
+Do not share this OTP with anyone.
+""")
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10) as smtp:
+        smtp.login(SENDER_EMAIL, SENDER_APP_PASSWORD)
+        smtp.send_message(msg)
 
 
 @app.context_processor
@@ -51,47 +69,8 @@ def inject_playlists():
             "count": get_playlist_song_count(playlist["id"])
         })
 
-    return {
-        "sidebar_playlists": playlist_data
-    }
+    return {"sidebar_playlists": playlist_data}
 
-
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "tunexa123"
-SENDER_EMAIL = "radhekrishna4774@gmail.com"
-SENDER_APP_PASSWORD = "juzr mkvr kbbg ombz"
-ALLOWED_ADMIN_CONTACTS =[
-    "radhekrishna4774@gmail.com",
-    "admine2@gmail.com",
-    "9876543210",
-    "9876543211",
-    "radhekrishna4774@gmail.com"
-]
-
-
-def is_admin_logged_in():
-    return session.get("admin_logged_in") == True
-def send_email_otp(receiver_email, otp):
-
-    msg = EmailMessage()
-
-    msg["Subject"] = "Flunix Admin OTP"
-    msg["From"] = SENDER_EMAIL
-    msg["To"] = receiver_email
-
-    msg.set_content(
-        f"""
-Your Flunix Admin OTP is:
-
-{otp}
-
-Do not share this OTP with anyone.
-        """
-    )
-
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-        smtp.login(SENDER_EMAIL, SENDER_APP_PASSWORD)
-        smtp.send_message(msg)
 
 @app.route("/")
 def home():
@@ -102,36 +81,22 @@ def home():
 @app.route("/search")
 def search():
     keyword = request.args.get("q", "")
-
-    if keyword:
-        songs = search_songs(keyword)
-    else:
-        songs = []
-
+    songs = search_songs(keyword) if keyword else []
     return render_template("search.html", songs=songs, keyword=keyword)
 
 
 @app.route("/category/<genre>")
 def category(genre):
     songs = search_songs(genre)
-
-    return render_template(
-        "category.html",
-        songs=songs,
-        genre=genre
-    )
+    return render_template("category.html", songs=songs, genre=genre)
 
 
 @app.route("/library")
 def library():
     playlists = get_playlists()
     liked_songs = get_liked_songs()
+    return render_template("library.html", playlists=playlists, liked_songs=liked_songs)
 
-    return render_template(
-        "library.html",
-        playlists=playlists,
-        liked_songs=liked_songs
-    )
 
 @app.route("/settings")
 def settings():
@@ -150,6 +115,7 @@ def like(song_id):
     like_song(song_id)
     return redirect(request.referrer or "/")
 
+
 @app.route("/track-view/<int:song_id>")
 def track_view(song_id):
     increase_song_view(song_id)
@@ -159,19 +125,14 @@ def track_view(song_id):
 @app.route("/download/<int:song_id>")
 def download_song(song_id):
     increase_song_download(song_id)
-
     song = get_song(song_id)
-
-    return redirect(
-        "/static/uploads/songs/" + song["song_file"]
-    )
+    return redirect("/static/uploads/songs/" + song["song_file"])
 
 
 @app.route("/playlists", methods=["GET", "POST"])
 def playlists():
     if request.method == "POST":
         name = request.form["name"]
-
         cover = request.files.get("cover")
         cover_filename = ""
 
@@ -182,7 +143,6 @@ def playlists():
             cover.save(os.path.join("static/uploads/playlists", cover_filename))
 
         create_playlist(name, cover_filename)
-
         flash("Playlist created successfully!")
         return redirect("/playlists")
 
@@ -228,7 +188,6 @@ def delete_playlist_route(playlist_id):
 @app.route("/song/<int:song_id>")
 def song(song_id):
     increase_song_view(song_id)
-
     song = get_song(song_id)
     playlists = get_playlists()
 
@@ -237,18 +196,17 @@ def song(song_id):
         song=song,
         playlists=playlists
     )
-    "@" in contact: send_email_otp(contact, otp)
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-
     if is_admin_logged_in():
         return redirect("/admin")
 
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        contact = request.form["contact"]
+        contact = request.form["contact"].strip()
 
         if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
 
@@ -262,17 +220,29 @@ def login():
             session["admin_otp"] = otp
             session["admin_contact"] = contact
 
-            print("ADMIN OTP:", otp, "CONTACT:", contact, flush=True) 
-            flash("OTP sent successfully. Check your email.")
+            print("ADMIN OTP:", otp, "CONTACT:", contact, flush=True)
+
+            if "@" in contact:
+                try:
+                    send_email_otp(contact, otp)
+                    flash("OTP sent successfully. Check your email.")
+                except Exception as e:
+                    print("EMAIL OTP ERROR:", e, flush=True)
+                    flash("Email OTP send failed. Check Render environment variables.")
+                    return redirect("/login")
+            else:
+                flash("Mobile OTP is not connected yet. Check terminal/logs for OTP.")
 
             return redirect("/verify-otp")
-            flash("Invalid username or password!")
+
+        flash("Invalid username or password!")
         return redirect("/login")
 
     return render_template("login.html")
+
+
 @app.route("/verify-otp", methods=["GET", "POST"])
 def verify_otp():
-
     if not session.get("pending_admin_login"):
         flash("Please login first.")
         return redirect("/login")
@@ -303,13 +273,11 @@ def logout():
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
-
     if not is_admin_logged_in():
         flash("Please login as admin first.")
         return redirect("/login")
 
     if request.method == "POST":
-
         title = request.form["title"]
         artist = request.form["artist"]
         album = request.form["album"]
@@ -332,14 +300,7 @@ def upload():
             song_filename = song.filename
             song.save(os.path.join("static/uploads/songs", song_filename))
 
-        add_song(
-            title,
-            artist,
-            album,
-            genre,
-            cover_filename,
-            song_filename
-        )
+        add_song(title, artist, album, genre, cover_filename, song_filename)
 
         flash("Song uploaded successfully!")
         return redirect("/upload")
@@ -349,7 +310,6 @@ def upload():
 
 @app.route("/admin")
 def admin():
-
     if not is_admin_logged_in():
         flash("Please login as admin first.")
         return redirect("/login")
@@ -363,33 +323,29 @@ def admin():
     most_played_songs = get_most_played_songs()
 
     return render_template(
-    "admin.html",
-    songs=songs,
-    total_songs=total_songs,
-    total_views=total_views,
-    total_likes=total_likes,
-    total_downloads=total_downloads,
-    most_played_songs=most_played_songs
-)
-    
+        "admin.html",
+        songs=songs,
+        total_songs=total_songs,
+        total_views=total_views,
+        total_likes=total_likes,
+        total_downloads=total_downloads,
+        most_played_songs=most_played_songs
+    )
 
 
 @app.route("/delete/<int:song_id>")
 def delete(song_id):
-
     if not is_admin_logged_in():
         flash("Please login as admin first.")
         return redirect("/login")
 
     delete_song(song_id)
     flash("Song deleted successfully!")
-
     return redirect("/admin")
 
 
 @app.route("/edit/<int:song_id>", methods=["GET", "POST"])
 def edit(song_id):
-
     if not is_admin_logged_in():
         flash("Please login as admin first.")
         return redirect("/login")
@@ -433,6 +389,7 @@ def edit(song_id):
         return redirect("/admin")
 
     return render_template("edit.html", song=song)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
