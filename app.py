@@ -237,6 +237,7 @@ def song(song_id):
         song=song,
         playlists=playlists
     )
+    "@" in contact: send_email_otp(contact, otp)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -261,14 +262,11 @@ def login():
             session["admin_otp"] = otp
             session["admin_contact"] = contact
 
-            print("ADMIN OTP:", otp, "CONTACT:", contact, flush=True)
-            if "@" in contact:
-             send_email_otp(contact, otp)
-
+            print("ADMIN OTP:", otp, "CONTACT:", contact, flush=True) 
             flash("OTP sent successfully. Check your email.")
-            return redirect("/verify-otp")
 
-        flash("Invalid username or password!")
+            return redirect("/verify-otp")
+            flash("Invalid username or password!")
         return redirect("/login")
 
     return render_template("login.html")
