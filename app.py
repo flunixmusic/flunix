@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, session
+
 from database.database import (
     create_tables, get_songs, get_song, add_song, search_songs,
     get_total_songs, delete_song, update_song, like_song,
@@ -10,9 +11,6 @@ from database.database import (
 )
 
 import os
-import random
-import smtplib
-from email.message import EmailMessage
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "flunix_secret_key")
@@ -22,38 +20,9 @@ create_tables()
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "tunexa123")
 
-SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "radhekrishna4774@gmail.com")
-SENDER_APP_PASSWORD = os.environ.get("SENDER_APP_PASSWORD", "aunuujzrirxsicig")
-
-ALLOWED_ADMIN_CONTACTS = [
-    "radhekrishna4774@gmail.com",
-    "admin2@gmail.com",
-    "9876543210",
-    "9876543211"
-]
-
 
 def is_admin_logged_in():
     return session.get("admin_logged_in") == True
-
-
-def send_email_otp(receiver_email, otp):
-    msg = EmailMessage()
-    msg["Subject"] = "Flunix Admin OTP"
-    msg["From"] = SENDER_EMAIL
-    msg["To"] = receiver_email
-
-    msg.set_content(f"""
-Your Flunix Admin OTP is:
-
-{otp}
-
-Do not share this OTP with anyone.
-""")
-
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10) as smtp:
-        smtp.login(SENDER_EMAIL, SENDER_APP_PASSWORD)
-        smtp.send_message(msg)
 
 
 @app.context_processor
@@ -204,64 +173,18 @@ def login():
         return redirect("/admin")
 
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        contact = request.form["contact"].strip()
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
-
-            if contact not in ALLOWED_ADMIN_CONTACTS:
-                flash("This email/mobile is not allowed for admin login.")
-                return redirect("/login")
-
-            otp = str(random.randint(100000, 999999))
-
-            session["pending_admin_login"] = True
-            session["admin_otp"] = otp
-            session["admin_contact"] = contact
-
-            print("ADMIN OTP:", otp, "CONTACT:", contact, flush=True)
-
-            if "@" in contact:
-                try:
-                    send_email_otp(contact, otp)
-                    flash("OTP sent successfully. Check your email.")
-                except Exception as e:
-                    print("EMAIL OTP ERROR:", e, flush=True)
-                    flash("Email OTP send failed. Check Render environment variables.")
-                    return redirect("/login")
-            else:
-                flash("Mobile OTP is not connected yet. Check terminal/logs for OTP.")
-
-            return redirect("/verify-otp")
+            session["admin_logged_in"] = True
+            flash("Admin login successful!")
+            return redirect("/admin")
 
         flash("Invalid username or password!")
         return redirect("/login")
 
     return render_template("login.html")
-
-
-@app.route("/verify-otp", methods=["GET", "POST"])
-def verify_otp():
-    if not session.get("pending_admin_login"):
-        flash("Please login first.")
-        return redirect("/login")
-
-    if request.method == "POST":
-        otp = request.form["otp"]
-
-        if otp == session.get("admin_otp"):
-            session["admin_logged_in"] = True
-            session.pop("pending_admin_login", None)
-            session.pop("admin_otp", None)
-
-            flash("Admin login successful!")
-            return redirect("/admin")
-
-        flash("Invalid OTP!")
-        return redirect("/verify-otp")
-
-    return render_template("verify_otp.html")
 
 
 @app.route("/logout")
